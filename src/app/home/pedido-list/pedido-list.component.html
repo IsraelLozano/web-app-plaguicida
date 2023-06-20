@@ -1,0 +1,95 @@
+<div fxLayout="row wrap">
+  <div fxFlex="100">
+    <mat-card>
+      <mat-card-content>
+        <div fxLayout="row wrap" class="align-items-center">
+          <div fxFlex.gt-md="25" fxFlex.gt-lg="25" fxFlex="100">
+            <mat-form-field>
+              <input matInput placeholder="Search Invoice" (keyup)="filter($event.target.value)" />
+            </mat-form-field>
+          </div>
+          <div fxFlex.gt-md="75" class="text-right">
+            <button
+              mat-raised-button="mat-raised-button"
+              style="margin: 5px 0px 5px 15px; min-width: 100px;"
+              type="button"
+              class="m-r-5"
+              color="primary"
+              [routerLink]="['/home/add-pedido']"
+              routerLinkActive="router-link-active"
+            >
+              <mat-icon class="mat-18">add</mat-icon>
+              Nuevo Producto
+            </button>
+
+            <!-- <button mat-raised-button color="primary" [routerLink]="['/home/add-pedido']">
+              Add Invoice
+            </button> -->
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div fxLayout="row wrap">
+  <div fxFlex="100">
+    <mat-card>
+      <div class="table-responsive">
+        <table mat-table [dataSource]="invoiceList" matSort class="table ticket-list">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+            <td mat-cell *matCellDef="let element" class="p-20 font-normal">
+              {{ element.IdPedido }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billFrom">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Operacion</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.FechaOperacion | date: 'dd/MM/yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="billTo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Importe Total</th>
+            <td mat-cell *matCellDef="let element" class="p-20 font-normal">
+              {{ element.ImporteTotal }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalCost">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>IGV</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.Igv }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Venta Total</th>
+            <td mat-cell *matCellDef="let element" class="p-20 font-normal">
+              {{ element.VentaTotal }}
+            </td>
+          </ng-container>
+
+          <!-- <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <a mat-icon-button [routerLink]="['/home/view-pedido/', element.IdPedido]">
+                <mat-icon class="text-info">remove_red_eye</mat-icon>
+              </a>
+
+              <button mat-icon-button color="warn" (click)="deleteInvoice(element.id)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </td>
+          </ng-container> -->
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 8, 10]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card>
+  </div>
+</div>
