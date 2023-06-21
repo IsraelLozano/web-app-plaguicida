@@ -38,27 +38,21 @@
         <table class="table table-hover border-all no-wrap v-middle">
           <thead>
             <tr>
-              <th>#</th>
-              <th width="40%">Articulo</th>
-              <th>P.U</th>
-              <th>Cantidad</th>
-              <th>Importe</th>
-              <th>% Part</th>
-              <th>% Comision</th>
-              <th></th>
+              <th class="font-10">#</th>
+              <th class="font-10" width="40%">Articulo</th>
+              <th class="font-10">P.U</th>
+              <th class="font-10">Cantidad</th>
+              <th class="font-10">Importe</th>
+              <th class="font-10">% Part</th>
+              <th class="font-10">% Com</th>
+              <th class="font-10"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let row of addForm.get('rows')?.controls; let index = index">
-              <td class="p-10 font-12">{{ index + 1 }}</td>
+              <td class="p-0 font-10">{{ index + 1 }}</td>
 
-              <td class="p-10">
-                <!-- <input matInput placeholder="Ingrese Articulo" aria-label="Camoens" [matAutocomplete]="articulos" class="form-control font-12" style="line-height: 18px !important;" />
-                <mat-autocomplete #articulos="matAutocomplete" (optionSelected)="onSelectionChange($event)">
-                  <mat-option *ngFor="let option of filterStates()" [value]="option">
-                    {{ option.NomArticulo }}
-                  </mat-option>
-                </mat-autocomplete> -->
+              <td class="p-0">
                 <input matInput placeholder="Ingrese Articulo" aria-label="Camoens" [formControl]="row.get('itemName')" [matAutocomplete]="autostart" class="form-control font-12" name="txt-{{index}}"
                   style="line-height: 18px !important;" />
                 <mat-autocomplete #autostart="matAutocomplete"  [displayWith]="displayFn" (optionSelected)="onSelectionChange($event, row)">
@@ -66,41 +60,42 @@
                     {{ option.NomArticulo }}
                   </mat-option>
                 </mat-autocomplete>
-
-                <!-- <input type="text" class="form-control font-12" [formControl]="row.get('itemName')"
-                  (input)="itemsChanged()" style="line-height: 18px !important;" /> -->
               </td>
 
-              <td class="p-10">
-                <input type="number" class="form-control font-12 text-right" disabled [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
+              <td class="p-0">
+                <input type="number" class="form-control font-10 text-right" disabled [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
                   style="line-height: 18px;" />
               </td>
 
-              <td class="p-10">
-                <input type="number" class="form-control font-12 text-center" min="1" [formControl]="row.get('units')" name="txt-units-{{index}}"
+              <td class="p-0">
+                <input type="number" class="form-control font-10 text-center" min="1" [formControl]="row.get('units')" name="txt-units-{{index}}"
                   (input)="itemsChanged()" style="line-height: 18px;" />
               </td>
 
-              <td class="p-10">
-                <input disabled class="form-control font-12 text-right" [formControl]="row.get('itemTotal')" name="txt-itemTotal-{{index}}"
+              <td class="p-0">
+                <input disabled class="form-control font-10 text-right" [formControl]="row.get('itemTotal')" name="txt-itemTotal-{{index}}"
                   [value]="row.get('unitPrice').value * row.get('units').value" style="line-height: 18px;" />
               </td>
 
-              <td class="p-10">
-                <input disabled  type="number" class="form-control font-12 text-center" name="txt-participacion-{{index}}"
+              <td class="p-0">
+                <input disabled  type="number" class="form-control font-10 text-center" name="txt-participacion-{{index}}"
                   [formControl]="row.get('participacion')" style="line-height: 18px;" />
               </td>
 
-              <td class="p-10">
-                <input disabled type="number" class="form-control font-12 text-center" name="txt-comision-{{index}}"
+              <td class="p-0">
+                <input disabled type="number" class="form-control font-10 text-center" name="txt-comision-{{index}}"
                   [formControl]="row.get('comision')" style="line-height: 18px;" />
               </td>
 
-              <td class="p-10">
+              <td class="p-0">
                 <div *ngIf="index > 0">
-                  <button color="warn" mat-raised-button (click)="onRemoveRow(index)">
+                   <a (click)="onRemoveRow(index)" class="m-r-10 cursor-pointer">
+                  <i class="fa fa-trash text-danger"></i>
+                </a>
+
+                  <!-- <button color="warn" mat-raised-button (click)="onRemoveRow(index)">
                     <mat-icon class="mat-18">delete_outline</mat-icon>
-                  </button>
+                  </button> -->
                 </div>
               </td>
             </tr>
