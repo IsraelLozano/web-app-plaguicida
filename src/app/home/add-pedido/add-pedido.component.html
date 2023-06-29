@@ -40,10 +40,11 @@
             <tr>
               <th class="font-10">#</th>
               <th class="font-10" width="40%">Articulo</th>
-              <th class="font-10">P.U</th>
               <th class="font-10">Cantidad</th>
+              <th class="font-10">P.U</th>
               <th class="font-10">Importe</th>
               <th class="font-10">% Part</th>
+              <th class="font-10">% Rent</th>
               <th class="font-10">% Com</th>
               <th class="font-10"></th>
             </tr>
@@ -53,24 +54,42 @@
               <td class="p-0 font-10">{{ index + 1 }}</td>
 
               <td class="p-0">
-                <input matInput placeholder="Ingrese Articulo" aria-label="Camoens" [formControl]="row.get('itemName')" [matAutocomplete]="autostart" class="form-control font-12" name="txt-{{index}}"
+
+                <input
+                type="text"
+                placeholder="Ingrese Nombre Plaga"
+                aria-label="Assignee"
+                matInput="matInput"
+                class="form-control font-12"
+                [formControl]="row.get('itemName')"
+                [matAutocomplete]="autostart"  name="txt-{{index}}"
+              />
+              <mat-autocomplete #autostart="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectionChange($event, row)">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                  {{ option.NomArticulo }}
+                </mat-option>
+              </mat-autocomplete>
+
+                <!-- <input  type="text" placeholder="Ingrese Articulo" aria-label="Camoens"
+                [formControl]="row.get('itemName')" [matAutocomplete]="autostart" class="form-control font-12" name="txt-{{index}}"
                   style="line-height: 18px !important;" />
+
                 <mat-autocomplete #autostart="matAutocomplete"  [displayWith]="displayFn" (optionSelected)="onSelectionChange($event, row)">
-                  <mat-option *ngFor="let option of filterStates('a') " [value]="option">
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                     {{ option.NomArticulo }}
                   </mat-option>
-                </mat-autocomplete>
-              </td>
-
-              <td class="p-0">
-                <input type="number" class="form-control font-10 text-right" disabled [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
-                  style="line-height: 18px;" />
+                </mat-autocomplete> -->
               </td>
 
               <td class="p-0">
                 <input type="number" class="form-control font-10 text-center" min="1" [formControl]="row.get('units')" name="txt-units-{{index}}"
                   (input)="itemsChanged()" style="line-height: 18px;" />
               </td>
+              <td class="p-0">
+                <input type="number" class="form-control font-10 text-right" [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
+                (input)="itemsChanged()"  style="line-height: 18px;" />
+              </td>
+
 
               <td class="p-0">
                 <input disabled class="form-control font-10 text-right" [formControl]="row.get('itemTotal')" name="txt-itemTotal-{{index}}"
@@ -80,6 +99,10 @@
               <td class="p-0">
                 <input disabled  type="number" class="form-control font-10 text-center" name="txt-participacion-{{index}}"
                   [formControl]="row.get('participacion')" style="line-height: 18px;" />
+              </td>
+              <td class="p-0">
+                <input disabled  type="number" class="form-control font-10 text-center" name="txt-rentabilidad-{{index}}"
+                  [formControl]="row.get('rentabilidad')" style="line-height: 18px;" />
               </td>
 
               <td class="p-0">

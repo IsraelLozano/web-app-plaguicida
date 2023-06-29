@@ -5,19 +5,13 @@
         <div fxLayout="row wrap" class="align-items-center">
           <div fxFlex.gt-md="25" fxFlex.gt-lg="25" fxFlex="100">
             <mat-form-field>
-              <input matInput placeholder="Search Invoice" (keyup)="filter($event.target.value)" />
+              <input matInput placeholder="Buscar pedidos" (keyup)="filter($event.target.value)" />
             </mat-form-field>
           </div>
           <div fxFlex.gt-md="75" class="text-right">
-            <button
-              mat-raised-button="mat-raised-button"
-              style="margin: 5px 0px 5px 15px; min-width: 100px;"
-              type="button"
-              class="m-r-5"
-              color="primary"
-              [routerLink]="['/home/add-pedido']"
-              routerLinkActive="router-link-active"
-            >
+            <button mat-raised-button="mat-raised-button" style="margin: 5px 0px 5px 15px; min-width: 100px;"
+              type="button" class="m-r-5" color="primary" [routerLink]="['/home/add-pedido']"
+              routerLinkActive="router-link-active">
               <mat-icon class="mat-18">add</mat-icon>
               Nuevo Producto
             </button>
@@ -59,31 +53,31 @@
           </ng-container>
 
           <ng-container matColumnDef="totalCost">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>IGV</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>% Comision</th>
             <td mat-cell *matCellDef="let element">
-              {{ element.Igv }}
+              {{ element.ComisionPercent }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Venta Total</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>US$ Comision</th>
             <td mat-cell *matCellDef="let element" class="p-20 font-normal">
-              {{ element.VentaTotal }}
+              {{ element.ComisionMonto  * 100 | number }}
             </td>
           </ng-container>
 
-          <!-- <ng-container matColumnDef="action">
+          <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element" class="text-center">
               <a mat-icon-button [routerLink]="['/home/view-pedido/', element.IdPedido]">
                 <mat-icon class="text-info">remove_red_eye</mat-icon>
               </a>
 
-              <button mat-icon-button color="warn" (click)="deleteInvoice(element.id)">
-                <mat-icon>delete_outline</mat-icon>
+              <button mat-icon-button color="primary" matTooltip="Clic para descargar en excel" (click)="deleteInvoice(element.IdPedido)">
+                <mat-icon>file_download</mat-icon>
               </button>
             </td>
-          </ng-container> -->
+          </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

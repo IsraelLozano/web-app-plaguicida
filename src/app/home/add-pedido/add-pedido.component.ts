@@ -11,7 +11,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { date } from 'ngx-custom-validators/src/app/date/validator';
-import { Observable, finalize, map, startWith } from 'rxjs';
+import { Observable, finalize, last, map, startWith } from 'rxjs';
 import { LoadingViews } from 'src/app/libs/components/loading/loading.views';
 import {
   GetListArticuloDto,
@@ -45,6 +45,10 @@ export class AddPedidoComponent implements OnInit {
   idPedido: number;
   PrecioReal!: number;
 
+  _tipoGab: number = 0;
+  _tipoC: number = 0;
+  _tipoD: number = 0;
+
   mitexto!: string;
 
   //Autocomplete
@@ -73,19 +77,24 @@ export class AddPedidoComponent implements OnInit {
 
     this.rows = this.fb.array([]);
     this.addForm.addControl('rows', this.rows);
-    this.rows.push(this.createItemFormGroup());
   }
   ngOnInit(): void {
+
+  }
+
+  filtrando(name: any) {
+    const texto = name?.target?.value;
+    this.filterStates(texto);
   }
 
   filterStates(name: string) {
-    return (
+    const filtrado =
       (name &&
         this.dataArticulos?.filter((state) =>
           state.NomArticulo.toLowerCase().includes(name?.toLowerCase()),
         )) ||
-      this.dataArticulos
-    );
+      this.dataArticulos;
+    return filtrado;
   }
 
   //For AutoComplete
@@ -96,16 +105,14 @@ export class AddPedidoComponent implements OnInit {
     return user ? user.NomArticulo : undefined;
   }
 
-  private _filter(name: string) {
+  _filter(name: string) {
     const filterValue = name.toLowerCase();
     return this.dataArticulos.filter((option) =>
       option.NomArticulo.toLowerCase().includes(filterValue),
     );
   }
-
   ////////////////////////////////////////////////////////////////////////////////////
   onAddRow(): void {
-    // this.myControl2.setValue('')
     this.rows.push(this.createItemFormGroup());
   }
 
@@ -131,6 +138,7 @@ export class AddPedidoComponent implements OnInit {
       fg.patchValue({
         participacion: (participacion * 100.0).toFixed(3),
         comision: (comision * 100.0).toFixed(3),
+        rentabilidad: articulo.RentabilidadComisions[0]?.Porcentaje,
       });
 
       this.totalComision += comision * 100.0;
@@ -140,15 +148,26 @@ export class AddPedidoComponent implements OnInit {
   }
 
   createItemFormGroup(): UntypedFormGroup {
-    return this.fb.group({
-      // itemName: [this.myControl2, Validators.required],
+    const control =  this.fb.group({
       itemName: [''],
       unitPrice: [0.0],
       units: ['', Validators.required],
       itemTotal: [0],
       participacion: [0],
+      rentabilidad: [0.0],
       comision: [0],
     });
+
+    this.filteredOptions = control.get('itemName')?.valueChanges.pipe(
+      startWith(''),
+      map((value) => {
+        const name = typeof value === 'string' ? value : value?.NomArticulo;
+        return name ? this._filter(name as string) : this.dataArticulos?.slice();
+      }),
+    );
+
+    return control;
+
   }
 
   itemsChanged(): void {
@@ -178,10 +197,12 @@ export class AddPedidoComponent implements OnInit {
       const { itemName, unitPrice, units } = fg.value;
       const articulo = itemName as GetListArticuloDto;
       const participacion = (units * unitPrice) / this.subTotal;
+
       const comision = participacion * (articulo?.RentabilidadComisions[0]?.CategoriaRes / 100.0);
       fg.patchValue({
         participacion: (participacion * 100.0).toFixed(3),
         comision: (comision * 100.0).toFixed(3),
+        rentabilidad: articulo.RentabilidadComisions[0]?.Porcentaje,
       });
 
       this.totalComision += comision * 100.0;
@@ -197,19 +218,17 @@ export class AddPedidoComponent implements OnInit {
 
     myRow.patchValue({
       unitPrice: precios.PrecioVenta,
+      rentabilidad: rentabilidad.Porcentaje,
     });
   }
-
   ////////////////////////////////////////////////////////////////////
-
   saveDetail(): void {
-
     this.PedidosItems = [];
 
     const getRows = this.addForm.get('rows') as FormArray;
     for (const iterator of getRows.controls) {
       const fg = iterator as FormGroup;
-      const { itemName, unitPrice, units,participacion,comision } = fg.value;
+      const { itemName, unitPrice, units, participacion, comision } = fg.value;
       const articulo = itemName as GetListArticuloDto;
 
       const o: SimuladorPedidoItem = {
@@ -226,11 +245,10 @@ export class AddPedidoComponent implements OnInit {
         Mb: articulo?.RentabilidadComisions[0]?.Porcentaje,
         PartImporteTotal: participacion,
         PesoAsignadoPercent: articulo?.RentabilidadComisions[0]?.CategoriaRes,
-        ComisionPercent: comision
+        ComisionPercent: comision,
       };
       this.PedidosItems.push(o);
     }
-
 
     const pedido: GetSimuladorPedidoDto = {
       IdPedido: 0,
@@ -246,41 +264,37 @@ export class AddPedidoComponent implements OnInit {
     //Enviar a grabar...
 
     this._dialogService
-          .confirm({
-            title: 'Confirmación',
-            message: '¿Desea grabar la información?',
-            buttonOk: {
-              text: 'ACEPTAR',
-            },
-            buttonCancel: {
-              text: 'CANCELAR',
-            },
-          })
-          .subscribe((result: boolean | undefined) => {
-
-            if (result) {
-              // Grabando
-              const loading = this.dialog.open(LoadingViews, { disableClose: true });
-              this.invoiceService
-                .AddOrEditPedido(pedido)
-                .pipe(finalize(() => loading.close()))
-                .subscribe((resultado) => {
-                  if (resultado) {
-                    this._dialogService.info({
-                      title: 'Confirmación',
-                      message: 'La información fue grabada correctamente.',
-                      button: {
-                        text: 'CERRAR',
-                      },
-                    });
-                    this.router.navigate(['/home/portalacademico']);
-                  }
+      .confirm({
+        title: 'Confirmación',
+        message: '¿Desea grabar la información?',
+        buttonOk: {
+          text: 'ACEPTAR',
+        },
+        buttonCancel: {
+          text: 'CANCELAR',
+        },
+      })
+      .subscribe((result: boolean | undefined) => {
+        if (result) {
+          // Grabando
+          const loading = this.dialog.open(LoadingViews, { disableClose: true });
+          this.invoiceService
+            .AddOrEditPedido(pedido)
+            .pipe(finalize(() => loading.close()))
+            .subscribe((resultado) => {
+              if (resultado) {
+                this._dialogService.info({
+                  title: 'Confirmación',
+                  message: 'La información fue grabada correctamente.',
+                  button: {
+                    text: 'CERRAR',
+                  },
                 });
-            }
-          });
-
-
-
+                this.router.navigate(['/home/portalacademico']);
+              }
+            });
+        }
+      });
   }
 
   GetArticulos() {
