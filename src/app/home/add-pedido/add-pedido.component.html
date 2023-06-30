@@ -82,22 +82,25 @@
               </td>
 
               <td class="p-0">
-                <input type="number" class="form-control font-10 text-center" min="1" [formControl]="row.get('units')" name="txt-units-{{index}}"
-                  (input)="itemsChanged()" style="line-height: 18px;" />
+                <input type="text" class="form-control font-10 text-center" min="1" [formControl]="row.get('units')" name="txt-units-{{index}}"
+                (keypress)="($event.charCode >= 48 && $event.charCode < 58)"
+                (input)="itemsChanged()" style="line-height: 18px;" />
               </td>
               <td class="p-0">
-                <input type="number" class="form-control font-10 text-right" [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
+                <input matInput class="form-control font-10 text-right"  [formControl]="row.get('unitPrice')" name="txt-unitPrice-{{index}}"
                 (input)="itemsChanged()"  style="line-height: 18px;" />
+                <mat-error *ngIf="row.get('unitPrice')?.errors">
+                 <strong matTooltip="Numero no válido">*</strong>
+                </mat-error>
               </td>
-
 
               <td class="p-0">
                 <input disabled class="form-control font-10 text-right" [formControl]="row.get('itemTotal')" name="txt-itemTotal-{{index}}"
-                  [value]="row.get('unitPrice').value * row.get('units').value" style="line-height: 18px;" />
+                  [value]="(row.get('unitPrice').value * row.get('units').value).toFixed(2)" style="line-height: 18px;" />
               </td>
 
               <td class="p-0">
-                <input disabled  type="number" class="form-control font-10 text-center" name="txt-participacion-{{index}}"
+                <input disabled  type="text" class="form-control font-10 text-center" name="txt-participacion-{{index}}"
                   [formControl]="row.get('participacion')" style="line-height: 18px;" />
               </td>
               <td class="p-0">

@@ -33,7 +33,7 @@ const routes: Routes = [
           urls: [
             {
               title: 'Home',
-              url: '/home',
+              url: '/',
             },
             {
               title: 'Portal',

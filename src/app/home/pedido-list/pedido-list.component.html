@@ -13,7 +13,7 @@
               type="button" class="m-r-5" color="primary" [routerLink]="['/home/add-pedido']"
               routerLinkActive="router-link-active">
               <mat-icon class="mat-18">add</mat-icon>
-              Nuevo Producto
+              Nuevo Pedido
             </button>
 
             <!-- <button mat-raised-button color="primary" [routerLink]="['/home/add-pedido']">
@@ -46,23 +46,25 @@
           </ng-container>
 
           <ng-container matColumnDef="billTo">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Importe Total</th>
-            <td mat-cell *matCellDef="let element" class="p-20 font-normal">
-              {{ element.ImporteTotal }}
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: right !important;">Importe Total
+            </th>
+            <td mat-cell *matCellDef="let element" class="font-12 text-right">
+              {{ element.ImporteTotal | number }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="totalCost">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>% Comision</th>
-            <td mat-cell *matCellDef="let element">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: right !important;">% Comision</th>
+            <td mat-cell *matCellDef="let element" class="font-12 text-right">
               {{ element.ComisionPercent }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>US$ Comision</th>
-            <td mat-cell *matCellDef="let element" class="p-20 font-normal">
-              {{ element.ComisionMonto  * 100 | number }}
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: right !important;">US$ Comision
+            </th>
+            <td mat-cell *matCellDef="let element" class="font-12 text-right">
+              {{ element.ComisionMonto * 100 | number }}
             </td>
           </ng-container>
 
@@ -73,7 +75,8 @@
                 <mat-icon class="text-info">remove_red_eye</mat-icon>
               </a>
 
-              <button mat-icon-button color="primary" matTooltip="Clic para descargar en excel" (click)="deleteInvoice(element.IdPedido)">
+              <button mat-icon-button color="primary" matTooltip="Clic para descargar en excel"
+                (click)="deleteInvoice(element.IdPedido)">
                 <mat-icon>file_download</mat-icon>
               </button>
             </td>

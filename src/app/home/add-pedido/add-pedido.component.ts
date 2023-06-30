@@ -138,7 +138,7 @@ export class AddPedidoComponent implements OnInit {
       fg.patchValue({
         participacion: (participacion * 100.0).toFixed(3),
         comision: (comision * 100.0).toFixed(3),
-        rentabilidad: articulo.RentabilidadComisions[0]?.Porcentaje,
+        // rentabilidad: articulo.RentabilidadComisions[0]?.Porcentaje,
       });
 
       this.totalComision += comision * 100.0;
@@ -147,10 +147,12 @@ export class AddPedidoComponent implements OnInit {
     this.totalComisionDolares = (this.totalComision / 100.0) * this.subTotal;
   }
 
+  numRegex = /^-?\d*[.,]?\d{0,2}$/;
+
   createItemFormGroup(): UntypedFormGroup {
     const control =  this.fb.group({
       itemName: [''],
-      unitPrice: [0.0],
+      unitPrice: ['0',[Validators.required, Validators.pattern(this.numRegex)]],
       units: ['', Validators.required],
       itemTotal: [0],
       participacion: [0],
@@ -199,10 +201,14 @@ export class AddPedidoComponent implements OnInit {
       const participacion = (units * unitPrice) / this.subTotal;
 
       const comision = participacion * (articulo?.RentabilidadComisions[0]?.CategoriaRes / 100.0);
+
+      const rentabilidadMargen = ((units * unitPrice) - (articulo?.RentabilidadComisions[0]?.CostoUnit * units)) / (units * unitPrice);
+
+
       fg.patchValue({
         participacion: (participacion * 100.0).toFixed(3),
         comision: (comision * 100.0).toFixed(3),
-        rentabilidad: articulo.RentabilidadComisions[0]?.Porcentaje,
+        rentabilidad: (rentabilidadMargen * 100).toFixed(2),
       });
 
       this.totalComision += comision * 100.0;

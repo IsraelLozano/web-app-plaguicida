@@ -31,6 +31,9 @@ export class CalculatorService extends GenericRepositoryService {
   GetPedidoAll() {
     return this.get<GetSimuladorPedidoDto[]>(`${this.urlAddress}${this.controller}/GetPedidoAll`);
   }
+  GetPedidoById(id: number) {
+    return this.get<GetSimuladorPedidoDto>(`${this.urlAddress}${this.controller}/GetPedidoById/${id}`);
+  }
   AddOrEditPedido(model: GetSimuladorPedidoDto) {
     return this.post<boolean>(`${this.urlAddress}${this.controller}/AddOrEditPedido`, model);
   }
