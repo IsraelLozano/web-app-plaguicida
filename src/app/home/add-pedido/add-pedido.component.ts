@@ -62,13 +62,6 @@ export class AddPedidoComponent implements OnInit {
     private _dialogService: DialogService,
   ) {
     this.idPedido = 1;
-    // this.invoice.IdPedido =
-    //   Math.max.apply(
-    //     Math,
-    //     this.invoiceService.getInvoiceList().map(function (o: any) {
-    //       return o.id;
-    //     }),
-    //   ) + 1;
 
     this.GetArticulos();
     ///////////////////////////////////////////////////////////
@@ -195,20 +188,35 @@ export class AddPedidoComponent implements OnInit {
     const getRows = this.addForm.get('rows') as FormArray;
 
     for (const iterator of getRows.controls) {
+
       const fg = iterator as FormGroup;
       const { itemName, unitPrice, units } = fg.value;
       const articulo = itemName as GetListArticuloDto;
-      const participacion = (units * unitPrice) / this.subTotal;
+
+      let precioFinal = articulo.ListaPrecioItems[0].PrecioBruto;
+
+      if (articulo.ListaPrecioItems[0].tienePromo) {
+
+        for (let index = 0; index < articulo.ListaPrecioItems[0].ListaPrecioItemDets.length; index++) {
+
+          const element = articulo.ListaPrecioItems[0].ListaPrecioItemDets[index];
+          if (units>=element.DesdeCantidad) {
+            precioFinal = element.PrecioBruto
+          }
+        }
+      }
+
+      const participacion = (units * precioFinal) / this.subTotal;
 
       const comision = participacion * (articulo?.RentabilidadComisions[0]?.CategoriaRes / 100.0);
 
-      const rentabilidadMargen = ((units * unitPrice) - (articulo?.RentabilidadComisions[0]?.CostoUnit * units)) / (units * unitPrice);
-
+      const rentabilidadMargen = ((units * precioFinal) - (articulo?.RentabilidadComisions[0]?.CostoUnit * units)) / (units * precioFinal);
 
       fg.patchValue({
         participacion: (participacion * 100.0).toFixed(3),
         comision: (comision * 100.0).toFixed(3),
         rentabilidad: (rentabilidadMargen * 100).toFixed(2),
+        unitPrice: precioFinal
       });
 
       this.totalComision += comision * 100.0;
@@ -223,7 +231,7 @@ export class AddPedidoComponent implements OnInit {
     const rentabilidad = RentabilidadComisions[0] as RentabilidadComision;
 
     myRow.patchValue({
-      unitPrice: precios.PrecioVenta,
+      unitPrice: precios.PrecioBruto,
       rentabilidad: rentabilidad.Porcentaje,
     });
   }
@@ -307,7 +315,7 @@ export class AddPedidoComponent implements OnInit {
     const loading = this.dialog.open(LoadingViews, { disableClose: true });
 
     this.invoiceService
-      .GetArticuloAll('a')
+      .GetArticuloAll('')
       .pipe(finalize(() => loading.close()))
       .subscribe((resp) => {
         this.dataArticulos = resp;

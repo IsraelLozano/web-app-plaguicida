@@ -19,7 +19,15 @@ export interface ArticuloCategorium {
 
 export interface ListaPrecioItem {
   IdListaPrecio: number;
-  PrecioVenta: number;
+  PrecioBruto:         number;
+  tienePromo:          boolean;
+  ListaPrecioItemDets: ListaPrecioItemDet[];
+}
+
+export interface ListaPrecioItemDet {
+  Iditem:        number;
+  DesdeCantidad: number;
+  PrecioBruto:   number;
 }
 
 export interface RentabilidadComision {
