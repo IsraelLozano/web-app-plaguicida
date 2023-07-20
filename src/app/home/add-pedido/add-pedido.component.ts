@@ -261,7 +261,7 @@ export class AddPedidoComponent implements OnInit {
     const getRows = this.addForm.get('rows') as FormArray;
     for (const iterator of getRows.controls) {
       const fg = iterator as FormGroup;
-      const { itemName, unitPrice, units, participacion, comision } = fg.value;
+      const { itemName, unitPrice, units, participacion, comision,rentabilidad } = fg.value;
       const articulo = itemName as Articulo;
 
       const o: SimuladorPedidoItem = {
@@ -275,7 +275,7 @@ export class AddPedidoComponent implements OnInit {
         PrecioVvd: unitPrice,
         Importe: units * unitPrice,
         Costo: articulo?.RentabilidadComisions[0]?.CostoUnit,
-        Mb: articulo?.RentabilidadComisions[0]?.Porcentaje,
+        Mb: rentabilidad,
         PartImporteTotal: participacion,
         PesoAsignadoPercent: articulo?.RentabilidadComisions[0]?.CategoriaRes,
         ComisionPercent: comision,

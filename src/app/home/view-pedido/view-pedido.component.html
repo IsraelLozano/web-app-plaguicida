@@ -14,9 +14,9 @@
 
       <hr />
       <div fxLayout="row wrap" class="align-items-center m-t-15 m-b-15">
-        <div fxFlex.gt-md="75" class="text-right">
-          <span class="font-medium"> Fecha Operacion: </span>
-          <h6 class="m-t-5 m-b-0">{{ invoiceDetail.FechaOperacion | date: 'dd/MM/yyyy' }}</h6>
+        <div fxFlex.gt-md="100" class="text-left">
+
+          <h5 class="m-b-5 font-medium">Fecha Operacion: {{ invoiceDetail.FechaOperacion | date: 'dd/MM/yyyy' }}</h5>
         </div>
       </div>
       <hr />
@@ -37,27 +37,27 @@
           </ng-container>
           <ng-container matColumnDef="total">
             <th class="font-12" mat-header-cell *matHeaderCellDef>Cantidad</th>
-            <td class="font-normal text-center" mat-cell *matCellDef="let element" class="font-12">{{ element.Cantidad }}</td>
+            <td class="font-normal text-center" mat-cell *matCellDef="let element" class="font-12 text-center">{{ element.Cantidad }}</td>
           </ng-container>
           <ng-container matColumnDef="PrecioVvd">
-            <th class="font-12" mat-header-cell *matHeaderCellDef>Precio<br>(US$)</th>
-            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12">{{ element.PrecioVvd }}</td>
+            <th class="font-12" mat-header-cell *matHeaderCellDef style="text-align: right !important;">P.U.<br>(US$)</th>
+            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12 text-right">{{ element.PrecioVvd  | number:'1.3-3' }}</td>
           </ng-container>
           <ng-container matColumnDef="Importe">
-            <th class="font-12" mat-header-cell *matHeaderCellDef>Importe<br>(US$)</th>
-            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12">{{ element.Importe }}</td>
+            <th class="font-12" mat-header-cell *matHeaderCellDef style="text-align: right !important;">Importe<br>(US$)</th>
+            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12 text-right">{{ element.Importe  | number:'1.3-3' }}</td>
           </ng-container>
           <ng-container matColumnDef="Mb">
-            <th class="font-12" mat-header-cell *matHeaderCellDef>Mb</th>
-            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12">{{ element.Mb }}</td>
+            <th class="font-12" mat-header-cell *matHeaderCellDef style="text-align: right !important;">Participacion<br>(%)</th>
+            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12 text-right">{{ element.PartImporteTotal | number:'1.3-3'}}</td>
           </ng-container>
           <ng-container matColumnDef="PesoAsignadoPercent">
-            <th class="font-12" mat-header-cell *matHeaderCellDef>Peso<br>(%)</th>
-            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12">{{ element.PesoAsignadoPercent }}</td>
+            <th class="font-12" mat-header-cell *matHeaderCellDef style="text-align: right !important;">Rentabilidad<br>(%)</th>
+            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12 text-right">{{ element.Mb | number:'1.3-3'}}</td>
           </ng-container>
           <ng-container matColumnDef="ComisionPercent">
-            <th class="font-12" mat-header-cell *matHeaderCellDef>Comision<br>(%)</th>
-            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12">{{ element.ComisionPercent | number }}</td>
+            <th class="font-12" mat-header-cell *matHeaderCellDef style="text-align: right !important;">Comision<br>(%)</th>
+            <td class="font-normal" mat-cell *matCellDef="let element" class="font-12 text-right">{{ element.ComisionPercent | number:'1.3-3' }}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
