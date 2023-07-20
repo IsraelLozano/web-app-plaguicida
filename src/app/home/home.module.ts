@@ -16,6 +16,7 @@ import { HomeInstitucionViews } from './home-institucion/home-institucion.views'
 import { AddPedidoComponent } from './add-pedido/add-pedido.component';
 import { ViewPedidoComponent } from './view-pedido/view-pedido.component';
 import { PedidoListComponent } from './pedido-list/pedido-list.component';
+import { GrillaTasaComponent } from './add-pedido/grilla-tasa/grilla-tasa.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { PedidoListComponent } from './pedido-list/pedido-list.component';
     AddPedidoComponent,
     ViewPedidoComponent,
     PedidoListComponent,
+    GrillaTasaComponent,
   ],
   imports: [
     DemoMaterialModule,

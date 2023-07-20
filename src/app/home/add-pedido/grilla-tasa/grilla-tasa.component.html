@@ -1,0 +1,29 @@
+<div class="table-responsive">
+  <table mat-table [dataSource]="this.cursosList" class="table ticket-list">
+    <ng-container matColumnDef="Categoria">
+      <th mat-header-cell *matHeaderCellDef class="font-10">Categoria</th>
+      <td mat-cell *matCellDef="let element" class="font-10">{{ element.Categoria }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="LimiteIni">
+      <th mat-header-cell *matHeaderCellDef class="font-10">Limite Ini</th>
+      <td mat-cell *matCellDef="let element" class="font-10">{{ element.LimiteIni }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="LimiteFin">
+      <th mat-header-cell *matHeaderCellDef class="font-10">Limite Fin</th>
+      <td mat-cell *matCellDef="let element" class="font-10">{{ element.LimiteIni }}</td>
+    </ng-container>
+    <ng-container matColumnDef="Peso">
+      <th mat-header-cell *matHeaderCellDef class="font-10">Peso % </th>
+      <td mat-cell *matCellDef="let element" class="font-10">{{ element.Peso}}</td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No se encontraron registros</td>
+    </tr>
+  </table>
+</div>

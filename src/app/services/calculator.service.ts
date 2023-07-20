@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { GenericRepositoryService } from './generic-repository.service';
-import { GetListArticuloDto } from '../models/calculator/get-list-articulo-dto';
+import { GetArticuloAllDto } from '../models/calculator/get-list-articulo-dto';
 import { GetSimuladorPedidoDto } from '../models/calculator/get-simulador-pedido-dto';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class CalculatorService extends GenericRepositoryService {
   }
 
   GetArticuloAll(filter: string) {
-    return this.get<GetListArticuloDto[]>(
+    return this.get<GetArticuloAllDto>(
       `${this.urlAddress}${this.controller}/GetArticuloAll/${filter}`,
     );
   }

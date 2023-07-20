@@ -1,4 +1,18 @@
-export interface GetListArticuloDto {
+
+export interface GetArticuloAllDto {
+  articulos:     Articulo[];
+  tasaComisions: TasaComision[];
+}
+
+
+export interface TasaComision {
+  Categoria: string;
+  LimiteIni: number;
+  LimiteFin: number;
+  Peso:      number;
+}
+
+export interface Articulo {
   IdEmpresa: number;
   IdArticulo: number;
   CodArticulo: string;

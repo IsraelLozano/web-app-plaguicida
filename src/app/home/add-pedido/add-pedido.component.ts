@@ -14,9 +14,10 @@ import { date } from 'ngx-custom-validators/src/app/date/validator';
 import { Observable, finalize, last, map, startWith } from 'rxjs';
 import { LoadingViews } from 'src/app/libs/components/loading/loading.views';
 import {
-  GetListArticuloDto,
+  Articulo,
   ListaPrecioItem,
   RentabilidadComision,
+  TasaComision,
 } from 'src/app/models/calculator/get-list-articulo-dto';
 import {
   GetSimuladorPedidoDto,
@@ -34,7 +35,7 @@ export class AddPedidoComponent implements OnInit {
   addForm: UntypedFormGroup;
   rows: UntypedFormArray;
   invoice!: GetSimuladorPedidoDto;
-  dataArticulos!: GetListArticuloDto[];
+  dataArticulos!: Articulo[];
   PedidosItems: SimuladorPedidoItem[] = [];
   ///////////////////////////////////////////////////////////
   subTotal = 0;
@@ -50,6 +51,7 @@ export class AddPedidoComponent implements OnInit {
   _tipoD: number = 0;
 
   mitexto!: string;
+  _tasa: TasaComision[] = [];
 
   //Autocomplete
 
@@ -94,13 +96,13 @@ export class AddPedidoComponent implements OnInit {
   myControl2 = new FormControl<string | any>('');
   filteredOptions: Observable<any[]> | undefined;
 
-  displayFn(user?: GetListArticuloDto): string | undefined {
+  displayFn(user?: Articulo): string | undefined {
     return user ? user.NomArticulo : undefined;
   }
 
   _filter(name: string) {
     const filterValue = name.toLowerCase();
-    return this.dataArticulos.filter((option) =>
+    return this.dataArticulos?.filter((option) =>
       option.NomArticulo.toLowerCase().includes(filterValue),
     );
   }
@@ -125,7 +127,7 @@ export class AddPedidoComponent implements OnInit {
     for (const iterator of getRows.controls) {
       const fg = iterator as FormGroup;
       const { itemName, unitPrice, units } = fg.value;
-      const articulo = itemName as GetListArticuloDto;
+      const articulo = itemName as Articulo;
       const participacion = (units * unitPrice) / this.subTotal;
       const comision = participacion * (articulo?.RentabilidadComisions[0]?.CategoriaRes / 100.0);
       fg.patchValue({
@@ -167,31 +169,47 @@ export class AddPedidoComponent implements OnInit {
 
   itemsChanged(): void {
     let total: number = 0;
-
+    this.subTotal = 0;
     // tslint:disable-next-line - Disables all
     for (let t = 0; t < (<UntypedFormArray>this.addForm.get('rows')).length; t++) {
       if (
         this.addForm.get('rows')?.value[t].unitPrice !== '' &&
         this.addForm.get('rows')?.value[t].units
       ) {
-        total =
-          this.addForm.get('rows')?.value[t].unitPrice * this.addForm.get('rows')?.value[t].units +
-          total;
+        total = this.addForm.get('rows')?.value[t].unitPrice * this.addForm.get('rows')?.value[t].units +  total;
       }
     }
 
-    this.subTotal = total;
-    this.vat = this.subTotal / 10;
-    this.grandTotal = this.subTotal + this.vat;
     this.totalComision = 0.0;
 
     const getRows = this.addForm.get('rows') as FormArray;
 
-    for (const iterator of getRows.controls) {
+    for (const iterator of getRows.controls)
+    {
+      const fg = iterator as FormGroup;
+      const { itemName, units } = fg.value;
+      const articulo = itemName as Articulo;
 
+      let precioFinal = articulo.ListaPrecioItems[0].PrecioBruto;
+
+      if (articulo.ListaPrecioItems[0].tienePromo) {
+
+        for (let index = 0; index < articulo.ListaPrecioItems[0].ListaPrecioItemDets.length; index++) {
+
+          const element = articulo.ListaPrecioItems[0].ListaPrecioItemDets[index];
+          if (units>=element.DesdeCantidad) {
+            precioFinal = element.PrecioBruto
+          }
+        }
+      }
+      this.subTotal += (units * precioFinal);
+
+    }
+
+    for (const iterator of getRows.controls) {
       const fg = iterator as FormGroup;
       const { itemName, unitPrice, units } = fg.value;
-      const articulo = itemName as GetListArticuloDto;
+      const articulo = itemName as Articulo;
 
       let precioFinal = articulo.ListaPrecioItems[0].PrecioBruto;
 
@@ -222,7 +240,8 @@ export class AddPedidoComponent implements OnInit {
       this.totalComision += comision * 100.0;
     }
 
-    this.totalComisionDolares = (this.totalComision / 100.0) * total;
+    this.totalComisionDolares = (this.totalComision / 100.0) * this.subTotal;
+
   }
 
   onSelectionChange(row: any, myRow: FormGroup) {
@@ -243,7 +262,7 @@ export class AddPedidoComponent implements OnInit {
     for (const iterator of getRows.controls) {
       const fg = iterator as FormGroup;
       const { itemName, unitPrice, units, participacion, comision } = fg.value;
-      const articulo = itemName as GetListArticuloDto;
+      const articulo = itemName as Articulo;
 
       const o: SimuladorPedidoItem = {
         IdPedido: 0,
@@ -318,7 +337,8 @@ export class AddPedidoComponent implements OnInit {
       .GetArticuloAll('')
       .pipe(finalize(() => loading.close()))
       .subscribe((resp) => {
-        this.dataArticulos = resp;
+        this.dataArticulos = resp.articulos;
+        this._tasa = resp.tasaComisions
       });
   }
 }
